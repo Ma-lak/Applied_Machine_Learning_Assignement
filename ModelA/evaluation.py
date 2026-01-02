@@ -1,7 +1,8 @@
+from sklearn.metrics import classification_report, accuracy_score
 
 
+def evaluate(y_test, y_pred):
 
-def evaluate():
+    print(classification_report(y_test, y_pred, target_names=["Benign", "Malignant"]))
 
-
-    pass
+    return accuracy_score(y_test, y_pred)#, accuracy_score(y_train, y_pred_train)

@@ -1,0 +1,10 @@
+torchvision
+requests
+pandas
+bs4
+scikit-image
+lxml
+torch
+
+
+
