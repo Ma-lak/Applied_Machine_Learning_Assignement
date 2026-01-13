@@ -6,6 +6,9 @@ from sklearn.metrics import classification_report, accuracy_score
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+from sklearn.model_selection import LearningCurveDisplay, ShuffleSplit
+
 def train_evaluate_visualise(X_train, y_train, X_test, y_test, gamma, feature_type):
 
    # Defining model complexity and gamma
@@ -23,7 +26,7 @@ def train_evaluate_visualise(X_train, y_train, X_test, y_test, gamma, feature_ty
     print(classification_report(y_test, y_pred, target_names=["Benign", "Malignant"]))
 
    # Visualizing the data based on the two classes
-    print("Visualizing " + feature_type + " features:")
+    print("Visualizing " + feature_type + " features...")
 
     fig, ax = plt.subplots(figsize=(5, 4))
     scatter = ax.scatter(
@@ -37,29 +40,46 @@ def train_evaluate_visualise(X_train, y_train, X_test, y_test, gamma, feature_ty
     ax.set_title(feature_type +" features in two-dimensional feature space")
     plt.show()
 
-
 # Learning curve plot
-    Cs = [0.01, 0.1, 1, 10, 100]
-    train_acc = []
-    test_acc = []
 
-    for C in Cs:
-     svm_plot = SVC(C=C, gamma='scale')
-     svm_plot.fit(X_train, y_train)
 
-     train_acc.append(svm_plot.score(X_train, y_train))
-     test_acc.append(svm_plot.score(X_test, y_test))
 
-    plt.figure(figsize=(4, 3))
-    plt.plot(Cs, train_acc, marker='o', label='Training accuracy')
-    plt.plot(Cs, test_acc, marker='o', label='Test accuracy')
-    plt.xscale('log')
-    plt.xlabel('C (model complexity)')
-    plt.ylabel('Accuracy')
-    plt.legend()
-    plt.title('Overfitting analysis for ' + feature_type + ' features')
+# Create cross-validation strategy
+    cv = ShuffleSplit(
+       n_splits=50,
+       test_size=0.2,
+       random_state=0
+   )
+
+# Plot
+    fig, ax = plt.subplots(figsize=(6, 5))
+
+    LearningCurveDisplay.from_estimator(
+    estimator=SVM_model,
+    X=X_train,
+    y=y_train,
+    train_sizes=np.linspace(0.1, 1.0, 5),
+    cv=cv,
+    score_type="both",
+    n_jobs=4,
+    line_kw={"marker": "o"},
+    std_display_style="fill_between",
+    score_name="Accuracy",
+    ax=ax
+   )
+
+# Clean legend and labels
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles[:2], ["Training Score", "Validation Score"])
+    ax.set_title("Learning Curve for SVM with " + feature_type + " features")
+    ax.set_xlabel("Training samples")
+    ax.set_ylabel("Accuracy")
+    ax.grid(True)
 
     plt.show()
+
+
+
 
     return "Training, Evaluation and Visualisation Complete"
 

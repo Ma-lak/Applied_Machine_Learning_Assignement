@@ -14,14 +14,15 @@ def augment_resnet_images(X, train=True):
         torch.Tensor: Transformed image tensor
     """
 
-    mean = [0.5, 0.5, 0.5]
-    std  = [0.5, 0.5, 0.5]
+    mean = [0.4914, 0.4822, 0.4465] #[0.5, 0.5, 0.5]
+    std  = [0.2023, 0.1994, 0.2010]#[0.5, 0.5, 0.5]
 
     if train:
+        # Apply data augmentation
         transform = T.Compose([
-            T.RandomHorizontalFlip(p=0.5),
+            T.RandomHorizontalFlip(p=0.5), 
             T.RandomRotation(10),
-            T.RandomCrop(28, padding=2),
+            T.RandomCrop(28, padding=2), # assuming original size is 28x28
             T.Normalize(mean=mean, std=std)
         ])
     else:
