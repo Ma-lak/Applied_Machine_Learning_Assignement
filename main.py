@@ -77,15 +77,16 @@ def main():
     # Train, evaluate and visualise model performance
     # For raw features
     train_evaluate_visualise(X_train, y_train, X_test, y_test, C = 100, gamma = 1e-06, feature_type="Raw")
-    print(X_train.shape)
+    print("Train shape is: ", X_train.shape)
+    print("Test shape is: ", X_test.shape)
 
     # For HOG features
     train_evaluate_visualise(processed_data['X_train_hog'], y_train, processed_data['X_test_hog'], y_test, C = 10, gamma = 0.1, feature_type="HOG")
-    print(processed_data['X_train_hog'].shape, processed_data['X_test_hog'].shape)
+    print("HOG Train and test shapes are: ", processed_data['X_train_hog'].shape, processed_data['X_test_hog'].shape)
 
     # For Augmented Features (Flipped, Gaussian Noise Removal and Flattened)
     train_evaluate_visualise(X_aug_flat, Y_aug, X_test, y_test, C = 100, gamma = 1e-06, feature_type="Augmented")
-    print(X_aug_flat.shape)
+    print("Augmented train shape is:" , X_aug_flat.shape)
 
 
     # Model B : Resnet18
