@@ -5,14 +5,25 @@ import numpy as np
 from typing import Dict
 
 def feature_pipeline(Xtrain, Xtest, ytrain, ytest) -> Dict[str, np.ndarray]:
-    
+    """
+    Perform Feature extraction and normalization.
+
+    Args:
+        Xtrain: Input image for training
+        Xtest: Input image for testing
+        ytrain: Labels for training set
+        ytest: Labels for testing set
+
+    Returns:
+        X_train_pca, X_test_pca, X_train_hog, X_test_hog, X_train_pca_normalized, X_test_pca_normalized: Preprocessed feature arrays
+    """
     # Flatten the images for SVM - keeping raw features
     X_train = Xtrain.reshape(len(Xtrain), -1)  # (N, 784)
     X_test = Xtest.reshape(len(Xtest), -1)  # (N, 784)
     y_train = ytrain.ravel()
     y_test = ytest.ravel()
 
-    # PCA (keep 80% variance)
+    # PCA (keep 80% variance) for dimensionality reduction - this is done to compare with HOG features
     pca = PCA(n_components=0.8, random_state=42) #0.8
     X_train_pca = pca.fit_transform(X_train)
     X_test_pca  = pca.transform(X_test)
@@ -31,9 +42,9 @@ def feature_pipeline(Xtrain, Xtest, ytrain, ytest) -> Dict[str, np.ndarray]:
         hog_feat = hog(
             img,
             orientations=5,
-            pixels_per_cell=(7, 7), # explain these!!!!!!!!!
+            pixels_per_cell=(7, 7), # Size of the cells (in pixels) over which the histogram is computed
             cells_per_block=(2, 2),
-            block_norm='L2' # might need to change back to L2-Hys
+            block_norm='L2' # Normalization method for the blocks
         )
         features_train.append(hog_feat)
 

@@ -22,7 +22,7 @@ def augment_resnet_images(X, train=True):
         transform = T.Compose([
             T.RandomHorizontalFlip(p=0.5), 
             T.RandomRotation(10),
-            T.RandomCrop(28, padding=2), # assuming original size is 28x28
+            T.RandomCrop(28, padding=2), # assuming data original size is 28x28 (true if resolution is 28x28)
             T.Normalize(mean=mean, std=std)
         ])
     else:

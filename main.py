@@ -11,6 +11,7 @@ from ModelB.resnet18_train_evaluate import resnet18_train_evaluate
 from ModelB.augment import augment_resnet_images
 
 
+
 def main():
     '''
     Load data from NPZ file, perform feature extraction, data augmentation, and execute the training and evaluation pipeline.
@@ -43,7 +44,6 @@ def main():
     print("Train shape:", Xtrain.shape, ytrain.shape)
     print("Test shape:", Xtest.shape, ytest.shape)
     print("Val shape:", Xval.shape, yval.shape)
-    #Xtrain, ytrain, Xtest, ytest, Xval, yval = load_data()
 
     # MODEL A
     # Flatten the images for SVM - keeping raw features
@@ -72,25 +72,19 @@ def main():
 
     # Flattening augmented training images to fit within SVM
     X_aug_flat = X_aug.reshape(X_aug.shape[0], -1)
-  #  X_test = Xtest.reshape(Xtest.shape[0], -1)
-  #  y_test = ytest.ravel()
+
 
     # Train, evaluate and visualise model performance
     # For raw features
-    train_evaluate_visualise(X_train, y_train, X_test, y_test, gamma = 1e-06, feature_type="Raw")
+    train_evaluate_visualise(X_train, y_train, X_test, y_test, C = 100, gamma = 1e-06, feature_type="Raw")
     print(X_train.shape)
 
-    # For PCA features
-    train_evaluate_visualise(processed_data['X_train_pca'], y_train, processed_data['X_test_pca'], y_test, gamma = 1e-06, feature_type="PCA")
-    print(processed_data['X_train_pca'].shape, processed_data['X_test_pca'].shape)
-    # For PCA + Normalization features
-    train_evaluate_visualise(processed_data['X_train_pca_normalized'], y_train, processed_data['X_test_pca_normalized'], y_test, gamma = 0.1, feature_type="PCA + Normalization")  # check if changing gamma fixes error
-    print(processed_data['X_train_pca_normalized'].shape, processed_data['X_test_pca_normalized'].shape)
     # For HOG features
-    train_evaluate_visualise(processed_data['X_train_hog'], y_train, processed_data['X_test_hog'], y_test, gamma = 0.1, feature_type="HOG")
+    train_evaluate_visualise(processed_data['X_train_hog'], y_train, processed_data['X_test_hog'], y_test, C = 10, gamma = 0.1, feature_type="HOG")
     print(processed_data['X_train_hog'].shape, processed_data['X_test_hog'].shape)
+
     # For Augmented Features (Flipped, Gaussian Noise Removal and Flattened)
-    train_evaluate_visualise(X_aug_flat, Y_aug, X_test, y_test, gamma = 1e-06, feature_type="Augmented")
+    train_evaluate_visualise(X_aug_flat, Y_aug, X_test, y_test, C = 100, gamma = 1e-06, feature_type="Augmented")
     print(X_aug_flat.shape)
 
 
@@ -166,9 +160,5 @@ def main():
 
     resnet18_train_evaluate(trainloader_aug, testloader_aug, valloader_aug)
 
-
 if __name__ == "__main__":
     main()
-
-
-
